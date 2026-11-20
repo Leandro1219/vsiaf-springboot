@@ -1,0 +1,11 @@
+.gradle/
+build/
+.idea/
+*.iml
+out/
+
+# Credenciales y configuraciones personales (nunca versionar)
+.env
+.env.*
+**/application-local.properties
+*.log
