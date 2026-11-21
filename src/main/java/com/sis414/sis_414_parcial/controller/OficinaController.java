@@ -5,6 +5,9 @@ import com.sis414.sis_414_parcial.dto.NuevaOficinaRequest;
 import com.sis414.sis_414_parcial.dto.OficinaDto;
 import com.sis414.sis_414_parcial.service.OficinaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,27 +19,38 @@ import java.util.List;
 @Tag(name = "Oficinas y Responsables")
 public class OficinaController {
     private final OficinaService service;
-
     public OficinaController(OficinaService service) { this.service = service; }
 
     @GetMapping
-    @Operation(summary = "OFICINA - Consultar lista para seleccionar", description = "Consulta necesaria para mostrar las oficinas registradas.")
+    @Operation(summary = "OFICINA - Consultar oficinas de la entidad y unidad configuradas",
+            description = "Devuelve unicamente los ocho campos de OFICINA.DBF. No expone ID interno PostgreSQL.")
     public List<OficinaDto> findAll() { return service.findAll(); }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "OFICINA - Consultar oficina", description = "Recupera los datos de una oficina existente.")
-    public OficinaDto findById(@PathVariable Long id) { return service.findById(id); }
+    @GetMapping("/{codOfic}")
+    @Operation(summary = "OFICINA - Consultar por CODOFIC",
+            description = "CODOFIC N(4) del DBF; la entidad y unidad se obtienen del contexto.")
+    public OficinaDto findByCodigo(@Parameter(description = "Codigo de oficina CODOFIC, NO id interno")
+                                    @PathVariable Integer codOfic) { return service.findByCodigo(codOfic); }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "OFICINA - Nuevo + Guardar (POST)",
-            description = "Nuevo inicia la captura en VSIAF; Guardar equivale a este POST. Código autogenerado, estado inicial INACTIVO. Requiere unidad existente.")
+            description = "La ventana pide solo NOMOFIC y OBSERV; ENTIDAD=10, UNIDAD del contexto, "
+                    + "CODOFIC automatico y API_ESTADO=3 INACTIVO. No crea unidades ficticias.")
+    @ApiResponses({@ApiResponse(responseCode = "201", description = "Oficina creada"),
+            @ApiResponse(responseCode = "400", description = "Nombre vacio o de mas de 65 caracteres"),
+            @ApiResponse(responseCode = "409", description = "Nombre repetido o codigo agotado")})
     public OficinaDto create(@RequestBody NuevaOficinaRequest request) { return service.create(request); }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{codOfic}")
     @Operation(summary = "OFICINA - Modificar + Guardar (PUT)",
-            description = "Actualiza nombre y observación. Conserva código, unidad y estado; no activa la oficina.")
-    public OficinaDto update(@PathVariable Long id, @RequestBody ModificarOficinaRequest request) {
-        return service.update(id, request);
+            description = "Cambia NOMOFIC/OBSERV; conserva CODOFIC, ENTIDAD, UNIDAD y estado.")
+    @ApiResponses({@ApiResponse(responseCode = "200", description = "Oficina actualizada"),
+            @ApiResponse(responseCode = "400", description = "Nombre invalido"),
+            @ApiResponse(responseCode = "404", description = "No existe la oficina"),
+            @ApiResponse(responseCode = "409", description = "Nombre repetido")})
+    public OficinaDto update(@Parameter(description = "CODOFIC del DBF, no el ID PostgreSQL")
+                              @PathVariable Integer codOfic, @RequestBody ModificarOficinaRequest request) {
+        return service.update(codOfic, request);
     }
 }

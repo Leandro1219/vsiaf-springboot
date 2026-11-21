@@ -2,11 +2,12 @@ package com.sis414.sis_414_parcial.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-/** Solo los datos que escribe el operador: el código y el estado los fija el servidor. */
-@Schema(description = "Nuevo + Guardar de una oficina. El código es automático y comienza INACTIVA.")
+/** Campos que el operador escribe en VSIAF: oficina y observacion. */
+@Schema(description = "OFICINA.DBF: nombre (C, 65) y observacion (Memo). "
+        + "Entidad=10 y unidad se obtienen del contexto aun si UNIDAD esta vacia; codigo, fecha, usuario y estado los asigna el sistema.")
 public record NuevaOficinaRequest(
-        @Schema(description = "Nombre de la oficina", example = "REGISTRO") String nomOfic,
-        @Schema(description = "Descripción de las funciones de la oficina", example = "Registra los bienes asignados") String observ,
-        @Schema(description = "ID de la unidad administrativa existente", example = "1") Long unidadId,
-        @Schema(description = "Usuario de prueba (opcional; máximo 8 caracteres)", example = "demo") String usuar
+        @Schema(description = "Nombre no repetido de oficina (maximo 65 caracteres)", example = "REGISTRO")
+        String nomOfic,
+        @Schema(description = "Observacion acerca de la funcion de la oficina", example = "Se encarga del registro de bienes")
+        String observ
 ) {}

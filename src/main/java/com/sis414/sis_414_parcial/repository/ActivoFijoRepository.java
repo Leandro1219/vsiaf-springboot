@@ -8,6 +8,8 @@ import java.util.Optional;
 
 @Repository
 public interface ActivoFijoRepository extends JpaRepository<ActivoFijo, Long> {
+    boolean existsByOficinaId(Long oficinaId);
+
     Optional<ActivoFijo> findFirstByOrderByIdAsc();
     Optional<ActivoFijo> findFirstByOrderByIdDesc();
     Optional<ActivoFijo> findFirstByIdGreaterThanOrderByIdAsc(Long id);

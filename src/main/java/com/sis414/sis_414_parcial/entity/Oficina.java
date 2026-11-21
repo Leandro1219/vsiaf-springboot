@@ -11,6 +11,15 @@ public class Oficina {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** ENTIDAD C(4) y UNIDAD C(5) en OFICINA.DBF.
+     * No son IDs ingresados por el operador: se resuelven del contexto institucional.
+     */
+    @Column(name = "entidad", length = 4)
+    private String entidadCodigo;
+
+    @Column(name = "unidad", length = 5)
+    private String unidadCodigo;
+
     private Integer codOfic;
 
     @Column(length = 65)
@@ -26,12 +35,20 @@ public class Oficina {
 
     private Integer apiEstado;
 
+    // Referencia tecnica OPCIONAL: UNIDAD C(5) del DBF puede estar vacia.
+    // No se inventa una fila en UNIDADADMIN solo para satisfacer la FK.
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidad_id", nullable = false)
+    @JoinColumn(name = "unidad_id", nullable = true)
     private UnidadAdmin unidad;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getEntidadCodigo() { return entidadCodigo; }
+    public void setEntidadCodigo(String entidadCodigo) { this.entidadCodigo = entidadCodigo; }
+
+    public String getUnidadCodigo() { return unidadCodigo; }
+    public void setUnidadCodigo(String unidadCodigo) { this.unidadCodigo = unidadCodigo; }
 
     public Integer getCodOfic() { return codOfic; }
     public void setCodOfic(Integer codOfic) { this.codOfic = codOfic; }

@@ -19,12 +19,14 @@ public class OpenApiConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("VSIAf")
-                        .version("Segundo parcial")
-                        .description("Aquí se encuentran los endpoints organizados según los diferentes módulos " +
-                                "y funciones del programa VSIAF. Se utilizaron métodos HTTP como GET, POST, PUT " +
-                                "y PATCH para realizar consultas, registrar información, modificar datos, activar " +
-                                "e inactivar registros."))
+                        .title("VSIAF 3.2 - API REST de referencia")
+                        .version("Proyecto academico - presentacion")
+                        .description("API REST desarrollada con Java 21, Spring Boot y PostgreSQL. "
+                                + "Los endpoints estan agrupados por ventanas del VSIAF 3.2. "
+                                + "El modulo Oficina se ajusta a los campos del archivo OFICINA.DBF "
+                                + "y trabaja con la entidad Ministerio de Relaciones Exteriores (10). "
+                                + "Los datos de demostracion son ficticios y no se sincronizan con "
+                                + "la base de datos del programa VSIAF original."))
                 .tags(List.of(
                         new Tag().name("Activos Fijos")
                                 .description("Registro y consulta de activos, ficha, movimientos y operaciones "
@@ -33,14 +35,15 @@ public class OpenApiConfig {
                         new Tag().name("Grupos y Auxiliares")
                                 .description("Grupos contables, auxiliares y relaciones disponibles en el proyecto."),
                         new Tag().name("Oficinas y Responsables")
-                                .description("OFICINAS: Nuevo + Guardar (POST), Modificar + Guardar (PUT), "
-                                        + "Activar e Inactivar (PATCH). RESPONSABLES: Nuevo + Guardar (POST), "
-                                        + "Modificar + Guardar (PUT), Activar e Inactivar (PATCH). "
-                                        + "Código asignado automáticamente y estado inicial INACTIVO; "
-                                        + "se consultan oficinas, responsables y los nueve departamentos de Expedido. "
-                                        + "Un responsable puede activarse o inactivarse aunque su oficina "
-                                        + "esté INACTIVA; ambos estados son independientes en este backend. "
-                                        + "Deshacer y Salir no requieren endpoints REST."),
+                                .description("OFICINA: GET, Nuevo+Guardar (POST), Modificar+Guardar (PUT), "
+                                        + "Activar/Inactivar (PATCH). La entidad es Ministerio de Relaciones Exteriores "
+                                        + "(codigo 10). El alta pide solo nombre y observacion; CODOFIC y contexto "
+                                        + "institucional se asignan automaticamente. UNIDAD vacia no exige una unidad ficticia. Los nombres de los campos "
+                                        + "son iguales en las respuestas de Oficina. Se valida que el nombre no se "
+                                        + "repita y que tenga maximo 65 caracteres. Los campos se contrastaron con "
+                                        + "OFICINA.DBF; se consulta por CODOFIC sin exponer el id interno de PostgreSQL. Responsables conserva su "
+                                        + "desarrollo previo y se revisa por separado. Guardar equivale a POST/PUT; "
+                                        + "Deshacer y Salir son acciones de pantalla."),
                         new Tag().name("Generar Reportes")
                                 .description("Consultas y generación de datos para reportes. "
                                         + "Su alcance depende de las funciones implementadas en el backend."),
